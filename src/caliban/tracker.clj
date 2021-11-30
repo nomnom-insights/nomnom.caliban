@@ -3,22 +3,9 @@
    reporting exception to Rollbar, using rollcage library."
   (:require
     [caliban.tracker.protocol :as protocol]
-    [cheshire.generate :refer [add-encoder]]
     [circleci.rollcage.core :as rollcage]
     [clojure.tools.logging :as log]
-    [com.stuartsierra.component :as component])
-  (:import
-    (java.util
-      Formatter$DateTime)))
-
-
-(defn- json-date-encoder
-  "Adds json encoding for DateTime vars"
-  []
-  (add-encoder
-    Formatter$DateTime
-    (fn [data jsonGenerator]
-      (.writeString jsonGenerator (str data)))))
+    [com.stuartsierra.component :as component]))
 
 
 (defn- wrap-rollcage-ring
@@ -50,8 +37,6 @@
         (log/infof "exception-tracker start client=rollcage environment=%s" environment)
         ;; unhandled exceptions are handled by rollcage client
         (rollcage/setup-uncaught-exception-handler client)
-        ;; convert dates to strings when generating json
-        (json-date-encoder)
         (assoc component :client client))))
 
 
