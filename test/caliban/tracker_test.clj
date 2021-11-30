@@ -41,7 +41,7 @@
           (let [failed-exception (Exception. "FAILED JSON")
                 rsp {:err 1
                      :exception failed-exception}]
-            (with-redefs [rollcage/error (fn [ex &]
+            (with-redefs [rollcage/error (fn [_ ex & _]
                                            (is (= ex failed-exception))
                                            {:err 0})]
               (is (= {:err 0}
