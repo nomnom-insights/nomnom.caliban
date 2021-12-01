@@ -5,17 +5,8 @@
     [caliban.tracker.protocol :as protocol]
     [circleci.rollcage.core :as rollcage]
     [clojure.tools.logging :as log]
-    [com.stuartsierra.component :as component]
-    [cheshire.generate :refer [add-encoder encode-str]])
-  (:import (java.util Formatter$DateTime)))
+    [com.stuartsierra.component :as component]))
 
-(defn- json-date-encoder
-  "Adds json encoding for DateTime vars"
-  []
-  (add-encoder
-    Formatter$DateTime
-    (fn [data jsonGenerator]
-      (.writeString jsonGenerator (str data)))))
 
 (defn- wrap-rollcage-ring
   "Wrapper for ring to report all exceptions
@@ -29,11 +20,16 @@
                                   :params (:params request)})
         (throw t)))))
 
+
 ;; =========== Component implementation ========
 
-(defrecord ExceptionTracker [token environment result-fn client]
+(defrecord ExceptionTracker
+  [token environment result-fn client]
+
   component/Lifecycle
-  (start [component]
+
+  (start
+    [component]
     ;; only start when not already set to value
     (if client
       component
@@ -41,21 +37,32 @@
         (log/infof "exception-tracker start client=rollcage environment=%s" environment)
         ;; unhandled exceptions are handled by rollcage client
         (rollcage/setup-uncaught-exception-handler client)
-        ;; convert dates to strings when generating json
-        (json-date-encoder)
         (assoc component :client client))))
-  (stop [component]
+
+
+  (stop
+    [component]
     (log/info "exception-tracker stop client=rollcage")
     (assoc component :client nil))
 
+
   protocol/ExceptionTracker
-  (report [this e]
+
+  (report
+    [_this e]
     (rollcage/error client e))
-  (report [this e request-data]
+
+
+  (report
+    [_this e request-data]
     (rollcage/error client e request-data))
-  (wrap-ring [this handler]
+
+
+  (wrap-ring
+    [_this handler]
     (log/info "exception-tracker wrap-ring client=rollcage")
     (wrap-rollcage-ring handler client)))
+
 
 ;; we experienced some edge cases when sending exception to Rollbar failed
 ;; cause of invalid JSON data in exception (e.g bad ex-info data)
@@ -73,6 +80,7 @@
           ;; because I was able to create component I know this will work
           error-client (rollcage/client token {:environment environment})]
       (rollcage/error error-client exception))))
+
 
 (defn create
   "Create ExceptionTracker component.
