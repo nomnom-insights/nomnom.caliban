@@ -49,17 +49,17 @@
   protocol/ExceptionTracker
 
   (report
-    [_ e]
+    [_this e]
     (rollcage/error client e))
 
 
   (report
-    [_ e request-data]
+    [_this e request-data]
     (rollcage/error client e request-data))
 
 
   (wrap-ring
-    [_ handler]
+    [_this handler]
     (log/info "exception-tracker wrap-ring client=rollcage")
     (wrap-rollcage-ring handler client)))
 

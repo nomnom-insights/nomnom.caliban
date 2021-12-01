@@ -11,19 +11,19 @@
   proto/ExceptionTracker
 
   (report
-    [_ e]
+    [_this e]
     (log/error e)
     e)
 
 
   (report
-    [_ e attrs]
+    [_this e attrs]
     (log/errorf e "attrs=%s" attrs)
     e)
 
 
   (wrap-ring
-    [_ handler]
+    [_this handler]
     (fn [req]
       (try
         (handler req)

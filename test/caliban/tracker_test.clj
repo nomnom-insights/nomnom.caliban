@@ -11,7 +11,8 @@
   (let [tracker-dev (component/start
                       (tracker/create {:token "123"
                                        :environment "development"}))
-        exception (ex-info "exception" {:data "data"})]
+        exception (ex-info "exception" {:data "data"
+                                        :datetime (java.time.LocalDateTime/now)})]
     (testing "report-ok"
       (with-redefs [rollcage/error (fn [_ ex & _]
                                      (is (= ex exception))
