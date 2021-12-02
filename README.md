@@ -26,5 +26,9 @@ See [here](doc/tracker.md)
 
 ## Release notes
 
-### v1.0.2 (10.9.2018)
+### v1.0.3 2021-12-02
+
+Update dependencies
+
+### v1.0.2 2018-09-10
 Open source nomnom/caliban library
