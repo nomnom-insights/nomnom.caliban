@@ -1,4 +1,4 @@
-(defproject nomnom/caliban "1.0.3-SNAPSHOT-1"
+(defproject nomnom/caliban "1.0.3"
   :description "Exception tracker components"
   :min-lein-version "2.5.0"
   :url "https://github.com/nomnom-insights/nomnom.caliban"
